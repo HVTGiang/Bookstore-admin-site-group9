@@ -1,16 +1,15 @@
 package com.book.dao;
 
-import com.book.entity.OrderEntity;
-import com.book.entity.OrderitemEntity;
-import com.book.util.HibernateUtil;
+import com.book.entity.Orderitem;
+import com.book.util.HibernateUtility;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.List;
 
 public class OrderItemDAO {
-    public static void save(OrderitemEntity orderItem){
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public static void save(Orderitem orderItem){
+        Session session = HibernateUtility.getSessionFactory().openSession();
         try{
             session.beginTransaction();
             session.save(orderItem);
@@ -25,12 +24,12 @@ public class OrderItemDAO {
         }
     }
 
-    public static List<OrderitemEntity> orderItemList(int id){
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<OrderitemEntity> orderItems =  null;
+    public static List<Orderitem> orderItemList(int id){
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Orderitem> orderItems =  null;
         try {
             // Create query
-            final String sqlString = "select o from OrderitemEntity o where o.idOrder = :id";
+            final String sqlString = "select o from Orderitem o where o.idOrder = :id";
 
             Query query = session.createQuery(sqlString);
             query.setParameter("id", id);
@@ -43,12 +42,12 @@ public class OrderItemDAO {
         return orderItems;
     }
 
-    public static List<OrderitemEntity> orderItemListByProduct(int id){
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<OrderitemEntity> orderItems =  null;
+    public static List<Orderitem> orderItemListByProduct(int id){
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Orderitem> orderItems =  null;
         try {
             // Create query
-            final String sqlString = "select o from OrderitemEntity o where o.idProduct = :id";
+            final String sqlString = "select o from Orderitem o where o.idProduct = :id";
 
             Query query = session.createQuery(sqlString);
             query.setParameter("id", id);
@@ -61,19 +60,18 @@ public class OrderItemDAO {
         return orderItems;
     }
 
-    public static List<OrderitemEntity> getAll() {
+    public static List<Orderitem> getAll() {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<OrderitemEntity> orderitemEntities = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Orderitem> orderitemEntities = null;
         try {
             // Create query
-            final String sqlString = "select ct from OrderitemEntity ct";
+            final String sqlString = " select ot from Orderitem ot";
             Query query = session.createQuery(sqlString);
             orderitemEntities = query.list();
         } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {
-            session.flush();
             session.close();
         }
         return orderitemEntities;

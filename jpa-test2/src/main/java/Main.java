@@ -1,10 +1,6 @@
-import com.book.business.*;
 import com.book.dao.*;
 import com.book.entity.*;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.List;
 
 public class Main {
@@ -125,8 +121,8 @@ public class Main {
 //        System.out.println(OrderDAO.find(1).getIdDelivery());
 //        System.out.println(Order.estimateReceiveDate(OrderDAO.find(1)));
 
-//        List<ProductEntity> findByCategoryID = ProductDAO.getAll();
-        System.out.println(Product.BestSellerBook().getName());
+        List<Orderitem> orderitemEntities = OrderItemDAO.getAll();
+        System.out.println(OrderItemDAO.getAll().get(0).getIdProduct());
 
 //        List<OrderEntity> orderList = OrderDAO.get5LastestOrder();
 //        System.out.println(orderList.size());

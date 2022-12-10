@@ -1,22 +1,20 @@
 package com.book.dao;
 
-import com.book.entity.OrderEntity;
-import com.book.entity.PaymethodEntity;
-import com.book.entity.ProductEntity;
-import com.book.util.HibernateUtil;
+import com.book.entity.Order;
+import com.book.util.HibernateUtility;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.List;
 
 public class OrderDAO {
-    public static List<OrderEntity> getAll() {
+    public static List<Order> getAll() {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<OrderEntity> orders = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Order> orders = null;
         try {
             // Create query
-            final String sqlString = "select ct from OrderEntity ct";
+            final String sqlString = "select ct from Order ct";
             Query query = session.createQuery(sqlString);
             orders = query.list();
         } catch (RuntimeException e) {
@@ -28,8 +26,8 @@ public class OrderDAO {
         return orders;
     }
 
-    public static void save(OrderEntity order) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public static void save(Order order) {
+        Session session = HibernateUtility.getSessionFactory().openSession();
         try {
             session.beginTransaction();
             session.save(order);
@@ -42,13 +40,13 @@ public class OrderDAO {
         }
     }
 
-    public static List<OrderEntity> findByStatus(int status) {
+    public static List<Order> findByStatus(int status) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<OrderEntity> orders = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Order> orders = null;
         try {
             // Create query
-            final String sqlString = "select ct from OrderEntity ct where status = :status";
+            final String sqlString = "select ct from Order ct where status = :status";
             Query query = session.createQuery(sqlString);
             query.setParameter("status", status);
             orders = query.list();
@@ -60,15 +58,15 @@ public class OrderDAO {
         return orders;
     }
 
-    public static OrderEntity find(int id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        OrderEntity order = session.load(OrderEntity.class,id);
+    public static Order getOrderByIdOrder(int id) {
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        Order order = session.load(Order.class,id);
         session.close();
         return order;
     }
 
-    public static void update(OrderEntity order) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public static void update(Order order) {
+        Session session = HibernateUtility.getSessionFactory().openSession();
         try {
             session.beginTransaction();
             session.update(order);
@@ -82,13 +80,13 @@ public class OrderDAO {
         }
     }
 
-    public static List<OrderEntity> findByCustomer(int customerID) {
+    public static List<Order> getOrderByIdCustomer(int customerID) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<OrderEntity> orders = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Order> orders = null;
         try {
             // Create query
-            final String sqlString = "select ct from OrderEntity ct where idUser = :id";
+            final String sqlString = "select ct from Order ct where idUser = :id";
             Query query = session.createQuery(sqlString);
             query.setParameter("id", customerID);
             orders = query.list();
@@ -100,13 +98,13 @@ public class OrderDAO {
         return orders;
     }
 
-    public static List<OrderEntity> findByEmployee(int employeeID) {
+    public static List<Order> getOrderByIdEmployee(int employeeID) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<OrderEntity> orders = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Order> orders = null;
         try {
             // Create query
-            final String sqlString = "select ct from OrderEntity ct where idSeller = :id";
+            final String sqlString = "select ct from Order ct where idSeller = :id";
             Query query = session.createQuery(sqlString);
             query.setParameter("id", employeeID);
             orders = query.list();
@@ -118,14 +116,14 @@ public class OrderDAO {
         return orders;
     }
 
-    public static List<OrderEntity> get5LastestOrder(){
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<OrderEntity> orderEntities = null;
+    public static List<Order> get5LastestOrder(){
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Order> orderEntities = null;
 
 //        int num = session.createQuery("select count(id) from Product p where active = 1");
 
         try{
-            final String sqlString = "Select p from OrderEntity p order by p.id desc";
+            final String sqlString = "Select p from Order p order by p.id desc";
             Query query = session.createQuery(sqlString);
             orderEntities = query.setMaxResults(5).list();
         }

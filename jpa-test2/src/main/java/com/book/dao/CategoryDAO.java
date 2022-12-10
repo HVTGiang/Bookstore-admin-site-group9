@@ -1,8 +1,8 @@
 package com.book.dao;
 
-import com.book.business.Category;
-import com.book.entity.CategoryEntity;
-import com.book.util.HibernateUtil;
+import com.book.admin.business.CategoryBS;
+import com.book.entity.Category;
+import com.book.util.HibernateUtility;
 import org.hibernate.HibernateError;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -16,14 +16,14 @@ public class CategoryDAO {
      * Đầu vào: không
      * Đầu ra: một list các thực thể hiện có trong database, null nếu không có dữ liệu
      * */
-    public static List<CategoryEntity> getAll() {
+    public static List<Category> getAll() {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtility.getSessionFactory().openSession();
 
-        List<CategoryEntity> categories = null;
+        List<Category> categories = null;
         try {
             // Create query
-            Query query = session.createQuery("from CategoryEntity", CategoryEntity.class);
+            Query query = session.createQuery("from Category", Category.class);
 
             // Return result List
             categories = query.getResultList();
@@ -39,9 +39,9 @@ public class CategoryDAO {
      * Đầu vào: một thực thể được tạo ở đâu đó ở các tầng trên
      * Đầu ra: một giá trị bool cho biết kết quả của việc thêm, true - thành công, false - thất bại
      * */
-    public static Boolean InsertCategory(Category category) {
+    public static Boolean save(CategoryBS category) {
         Boolean flag = false;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtility.getSessionFactory().openSession();
         Transaction transaction = session.getTransaction();
         try {
             if (category != null) {
@@ -73,9 +73,9 @@ public class CategoryDAO {
      * Đầu vào: một thực thể được tạo ở đâu đó ở các tầng trên
      * Đầu ra: một giá trị bool cho biết kết quả của việc cập nhật, true - thành công, false - thất bại
      * */
-    public static Boolean UpdateCategory(Category category) {
+    public static Boolean update(Category category) {
         Boolean flag = false;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtility.getSessionFactory().openSession();
         Transaction transaction = session.getTransaction();
         try {
             if (category != null) {
@@ -107,16 +107,16 @@ public class CategoryDAO {
      * Đầu vào: chuỗi chứa tên cần tìm
      * Đầu ra: một cái thực thể tìm được, là null nếu không tìm thấy
      * */
-    public static List<CategoryEntity> findCategory(String name) {
+    public static List<Category> findByName(String name) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<CategoryEntity> categories = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Category> categories = null;
         try {
             // Create query string
-            String queryString = "from CategoryEntity where name like :name";
+            String queryString = "from Category where name like :name";
 
             // Create query
-            Query query = session.createQuery(queryString, CategoryEntity.class);
+            Query query = session.createQuery(queryString, Category.class);
             query.setParameter("name", "%" + name + "%");
 
             // Return result List
@@ -133,14 +133,14 @@ public class CategoryDAO {
      * Đầu vào: một số nguyên là id của dòng cần tìm
      * Đầu ra: một cái thực thể tìm được, là null nếu không tìm thấy
      * */
-    public static CategoryEntity findCategory(int id) {
+    public static Category findById(int id) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        CategoryEntity category = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        Category category = null;
         try {
             if (id != 0) {
                 // Return result List
-                category = session.load(CategoryEntity.class, id);
+                category = session.load(Category.class, id);
             }
         } catch (HibernateError error) {
             System.err.println(error);
@@ -154,9 +154,9 @@ public class CategoryDAO {
      * Đầu vào: một thực thể được tạo ở đâu đó ở các tầng trên
      * Đầu ra: một giá trị bool cho biết kết quả của việc xóa, true - thành công, false - thất bại
      * */
-    public static Boolean DeleteCategory(CategoryEntity category) {
+    public static Boolean delete(Category category) {
         Boolean flag = false;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtility.getSessionFactory().openSession();
         Transaction transaction = session.getTransaction();
         try {
             if (category != null) {

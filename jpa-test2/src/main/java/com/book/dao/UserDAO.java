@@ -1,9 +1,7 @@
 package com.book.dao;
 
-import com.book.business.Category;
-import com.book.entity.CategoryEntity;
-import com.book.entity.UserEntity;
-import com.book.util.HibernateUtil;
+import com.book.entity.User;
+import com.book.util.HibernateUtility;
 import org.hibernate.HibernateError;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -17,13 +15,13 @@ public class UserDAO {
      * Đầu vào: không
      * Đầu ra: một list các thực thể hiện có trong database, null nếu không có dữ liệu
      * */
-    public static List<UserEntity> getAll() {
+    public static List<User> getAll() {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<UserEntity> userList = new ArrayList<>();
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<User> userList = new ArrayList<>();
         try {
             // Create query
-            Query query = session.createQuery("from UserEntity where active = false", UserEntity.class);
+            Query query = session.createQuery("from User where active = true", User.class);
 
             // Query
             userList = query.list();
@@ -41,9 +39,9 @@ public class UserDAO {
      * Đầu vào: một thực thể được tạo ở đâu đó ở các tầng trên
      * Đầu ra: một giá trị bool cho biết kết quả của việc thêm, true - thành công, false - thất bại
      * */
-    public static Boolean save(UserEntity user) {
+    public static Boolean save(User user) {
         Boolean flag = false;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtility.getSessionFactory().openSession();
         try {
             if (user != null) {
                 // Bắt đầu transaction
@@ -74,9 +72,9 @@ public class UserDAO {
      * Đầu vào: một thực thể được tạo ở đâu đó ở các tầng trên
      * Đầu ra: một giá trị bool cho biết kết quả của việc cập nhật, true - thành công, false - thất bại
      * */
-    public static Boolean update(UserEntity user) {
+    public static Boolean update(User user) {
         Boolean flag = false;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtility.getSessionFactory().openSession();
         Transaction transaction = session.getTransaction();
         try {
             if (user != null) {
@@ -105,14 +103,14 @@ public class UserDAO {
         return flag;
     }
 
-    public static UserEntity find(int id) {
+    public static User find(int id) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        UserEntity user = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        User user = null;
         try {
             if (id != 0) {
                 // Return result List
-                user = session.load(UserEntity.class, id);
+                user = session.load(User.class, id);
             }
         } catch (HibernateError error) {
             System.err.println(error);
@@ -126,16 +124,16 @@ public class UserDAO {
      * Đầu vào: chuỗi chứa tên cần tìm
      * Đầu ra: một cái thực thể tìm được, là null nếu không tìm thấy
      * */
-    public static List<UserEntity> find(String name) {
+    public static List<User> searchByName(String name) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<UserEntity> users = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<User> users = null;
         try {
             // Create query string
-            String queryString = "from UserEntity where name like :name and active=false";
+            String queryString = "from User where name like :name and active=true";
 
             // Create query
-            Query query = session.createQuery(queryString, UserEntity.class);
+            Query query = session.createQuery(queryString, User.class);
             query.setParameter("name", "%" + name + "%");
 
             // Return result List
@@ -148,16 +146,16 @@ public class UserDAO {
         return users;
     }
 
-    public static List<UserEntity> findByRole(int id) {
+    public static List<User> findByRole(int id) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<UserEntity> users = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<User> users = null;
         try {
             // Create query string
-            String queryString = "from UserEntity where isRole = :role and active=false";
+            String queryString = "from User where isRole = :role and active = true";
 
             // Create query
-            Query query = session.createQuery(queryString, UserEntity.class);
+            Query query = session.createQuery(queryString, User.class);
             query.setParameter("role", id);
 
             // Return result List
@@ -170,16 +168,16 @@ public class UserDAO {
         return users;
     }
 
-    public static List<UserEntity> findByPhone(String phone) {
+    public static List<User> findByPhone(String phone) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<UserEntity> users = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<User> users = null;
         try {
             // Create query string
-            String queryString = "from UserEntity where phone like :phone and active=false";
+            String queryString = "from User where phone like :phone and active=true";
 
             // Create query
-            Query query = session.createQuery(queryString, UserEntity.class);
+            Query query = session.createQuery(queryString, User.class);
             query.setParameter("phone", phone);
 
             // Return result List
@@ -192,16 +190,16 @@ public class UserDAO {
         return users;
     }
 
-    public static List<UserEntity> findByEmail(String email) {
+    public static List<User> findByEmail(String email) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<UserEntity> users = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<User> users = null;
         try {
             // Create query string
-            String queryString = "from UserEntity where email like :email and active=false";
+            String queryString = "from User where email like :email and active=true";
 
             // Create query
-            Query query = session.createQuery(queryString, UserEntity.class);
+            Query query = session.createQuery(queryString, User.class);
             query.setParameter("email", email);
 
             // Return result List

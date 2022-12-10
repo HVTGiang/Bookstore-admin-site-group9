@@ -1,9 +1,7 @@
 package com.book.dao;
 
-import com.book.entity.CategoryEntity;
-import com.book.entity.ProductEntity;
-import com.book.util.HibernateUtil;
-import org.hibernate.Criteria;
+import com.book.entity.Product;
+import com.book.util.HibernateUtility;
 import org.hibernate.HibernateError;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -11,8 +9,8 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class ProductDAO {
-    public static void save(ProductEntity product) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public static void save(Product product) {
+        Session session = HibernateUtility.getSessionFactory().openSession();
         try {
             session.beginTransaction();
             session.save(product);
@@ -25,8 +23,8 @@ public class ProductDAO {
         }
     }
 
-    public static void update(ProductEntity product) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public static void update(Product product) {
+        Session session = HibernateUtility.getSessionFactory().openSession();
         try {
             session.beginTransaction();
             session.update(product);
@@ -40,10 +38,10 @@ public class ProductDAO {
     }
 
     public static void delete(int id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtility.getSessionFactory().openSession();
         try {
             session.beginTransaction();
-            ProductEntity product = session.get(ProductEntity.class, id);
+            Product product = session.get(Product.class, id);
             if (product != null) {
                 session.delete(product);
             }
@@ -56,19 +54,19 @@ public class ProductDAO {
         }
     }
 
-    public static ProductEntity findById(int id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        ProductEntity product = session.load(ProductEntity.class,id);
+    public static Product getProductByID(int id) {
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        Product product = session.load(Product.class, id);
         return product;
     }
 
-    public static List<ProductEntity> getAll() {
+    public static List<Product> getAll() {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<ProductEntity> products = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Product> products = null;
         try {
             // Create query
-            final String sqlString = "select ct from ProductEntity ct where active=false ";
+            final String sqlString = "from Product ct where active=true ";
             Query query = session.createQuery(sqlString);
             products = query.list();
         } catch (RuntimeException e) {
@@ -79,12 +77,12 @@ public class ProductDAO {
         return products;
     }
 
-    public ProductEntity getLatestProduct() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        ProductEntity product = new ProductEntity();
-        List<ProductEntity> products = null;
+    public Product getLatestProduct() {
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        Product product = new Product();
+        List<Product> products = null;
         try {
-            final String sqlString = "Select p from ProductEntity p  where active=false order by p.id desc";
+            final String sqlString = "Select p from Product p  where active=true order by p.id desc";
             Query query = session.createQuery(sqlString);
             products = query.list();
             product = products.get(0);
@@ -96,16 +94,16 @@ public class ProductDAO {
         return product;
     }
 
-    public static List<ProductEntity> findByName(String name) {
+    public static List<Product> searchByname(String name) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<ProductEntity> books = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Product> books = null;
         try {
             // Create query string
-            String queryString = "from ProductEntity where name like :name and active=false";
+            String queryString = "from Product where name like :name and active=true";
 
             // Create query
-            Query query = session.createQuery(queryString, ProductEntity.class);
+            Query query = session.createQuery(queryString, Product.class);
             query.setParameter("name", "%" + name + "%");
 
             // Return result List
@@ -118,13 +116,13 @@ public class ProductDAO {
         return books;
     }
 
-    public static List<ProductEntity> findByCategoryID(int id) {
+    public static List<Product> getProductByCategoryID(int id) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<ProductEntity> products = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Product> products = null;
         try {
             // Create query
-            final String sqlString = "select ct from ProductEntity ct where idCategory = :cID and active=false ";
+            final String sqlString = "select ct from Product ct where idCategory = :cID and active=true ";
             Query query = session.createQuery(sqlString);
             query.setParameter("cID", id);
             products = query.list();
@@ -136,16 +134,15 @@ public class ProductDAO {
         return products;
     }
 
-    public static List<ProductEntity> get5LastestProduct(){
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<ProductEntity> products = null;
+    public static List<Product> get5LastestProduct() {
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Product> products = null;
 
-        try{
-            final String sqlString = "Select p from ProductEntity p order by p.id desc";
+        try {
+            final String sqlString = "Select p from Product p order by p.id desc";
             Query query = session.createQuery(sqlString);
             products = query.setMaxResults(5).list();
-        }
-        catch(RuntimeException e){
+        } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {
             session.close();

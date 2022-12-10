@@ -1,14 +1,9 @@
 package com.book.dao;
 
-import com.book.business.Category;
-import com.book.entity.CategoryEntity;
-import com.book.entity.DeliveryEntity;
-import com.book.entity.PaymethodEntity;
-import com.book.entity.ProductEntity;
-import com.book.util.HibernateUtil;
+import com.book.entity.Delivery;
+import com.book.util.HibernateUtility;
 import org.hibernate.HibernateError;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.util.List;
@@ -19,14 +14,14 @@ public class DeliveryDAO {
      * Đầu vào: không
      * Đầu ra: một list các thực thể hiện có trong database, null nếu không có dữ liệu
      * */
-    public static List<DeliveryEntity> getAll() {
+    public static List<Delivery> getAll() {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtility.getSessionFactory().openSession();
 
-        List<DeliveryEntity> deliveries = null;
+        List<Delivery> deliveries = null;
         try {
             // Create query
-            Query query = session.createQuery("from DeliveryEntity", DeliveryEntity.class);
+            Query query = session.createQuery("from Delivery", Delivery.class);
 
             // Return result List
             deliveries = query.getResultList();
@@ -42,8 +37,8 @@ public class DeliveryDAO {
      * Đầu vào: một thực thể được tạo ở đâu đó ở các tầng trên
      * Đầu ra: một giá trị bool cho biết kết quả của việc thêm, true - thành công, false - thất bại
      * */
-    public static void save(DeliveryEntity delivery) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public static void save(Delivery delivery) {
+        Session session = HibernateUtility.getSessionFactory().openSession();
         try {
             session.beginTransaction();
             session.save(delivery);
@@ -56,22 +51,22 @@ public class DeliveryDAO {
         }
     }
 
-    public static DeliveryEntity find(int id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        DeliveryEntity delivery = session.load(DeliveryEntity.class,id);
+    public static Delivery getDeliveryByID(int id) {
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        Delivery delivery = session.load(Delivery.class,id);
         return delivery;
     }
 
-    public static List<DeliveryEntity> find(String name) {
+    public static List<Delivery> getDeliveryByName(String name) {
         // open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        List<DeliveryEntity> deliveries = null;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Delivery> deliveries = null;
         try {
             // Create query string
-            String queryString = "from DeliveryEntity where name like :name";
+            String queryString = "from Delivery where name like :name";
 
             // Create query
-            Query query = session.createQuery(queryString, DeliveryEntity.class);
+            Query query = session.createQuery(queryString, Delivery.class);
             query.setParameter("name", name);
 
             // Return result List

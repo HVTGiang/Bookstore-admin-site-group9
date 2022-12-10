@@ -11,7 +11,7 @@
         <property name="hibernate.show_sql">true</property>
         <property name="connection.pool_size">100</property>
         <!-- SQL dialect -->
-        <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
 
         <property name="hibernate.connection.CharSet">utf8</property>
         <property name="hibernate.connection.characterEncoding">utf8</property>
@@ -23,13 +23,13 @@
         <property name="hibernate.allow_update_outside_transaction">true</property>
 
         <!-- Entities Mapping-->
-        <mapping class="com.book.entity.CategoryEntity"/>
-        <mapping class="com.book.entity.UserEntity"/>
-        <mapping class="com.book.entity.CartitemEntity"/>
-        <mapping class="com.book.entity.DeliveryEntity"/>
-        <mapping class="com.book.entity.OrderEntity"/>
-        <mapping class="com.book.entity.OrderitemEntity"/>
-        <mapping class="com.book.entity.PaymethodEntity"/>
-        <mapping class="com.book.entity.ProductEntity"/>
+        <mapping class="com.book.entity.Category"/>
+        <mapping class="com.book.entity.User"/>
+        <mapping class="com.book.entity.Cartitem"/>
+        <mapping class="com.book.entity.Delivery"/>
+        <mapping class="com.book.entity.Order"/>
+        <mapping class="com.book.entity.Orderitem"/>
+        <mapping class="com.book.entity.Paymethod"/>
+        <mapping class="com.book.entity.Product"/>
     </session-factory>
 </hibernate-configuration>
