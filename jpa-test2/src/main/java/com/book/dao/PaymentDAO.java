@@ -1,5 +1,6 @@
 package com.book.dao;
 
+import com.book.entity.Delivery;
 import com.book.entity.Paymethod;
 import com.book.util.HibernateUtility;
 import org.hibernate.HibernateError;
@@ -84,5 +85,35 @@ public class PaymentDAO {
         Session session = HibernateUtility.getSessionFactory().openSession();
         Paymethod paymethod = session.load(Paymethod.class,id);
         return paymethod;
+    }
+
+    public static Boolean delete(Paymethod paymethod) {
+        Boolean flag = false;
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        Transaction transaction = session.getTransaction();
+        try {
+            if (paymethod != null) {
+                // Bắt đầu transaction
+                transaction.begin();
+
+                // Cập nhật dữ liệu vào bảng
+                // Chỗ này là cập nhật cái field active của thực thể bằng 1 nè
+                session.delete(paymethod);
+
+                // Đánh dấu là thành công
+                flag = true;
+
+                // Commit transaction
+                transaction.commit();
+            }
+        } catch (RuntimeException e) {
+            System.err.println(e);
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return flag;
     }
 }

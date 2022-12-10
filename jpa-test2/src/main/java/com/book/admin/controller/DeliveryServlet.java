@@ -1,10 +1,15 @@
 package com.book.admin.controller;
 
 import com.book.admin.business.DeliveryBS;
+import com.book.admin.business.ProductBS;
+import com.book.dao.CategoryDAO;
 import com.book.dao.DeliveryDAO;
 import com.book.dao.PaymentDAO;
+import com.book.dao.ProductDAO;
+import com.book.entity.Category;
 import com.book.entity.Delivery;
 import com.book.entity.Paymethod;
+import com.book.entity.Product;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -72,6 +77,9 @@ public class DeliveryServlet extends HttpServlet {
             case "save":
                 actionSave(request, response);
                 break;
+            case "delete":
+                actionDelete(request, response);
+                break;
             case "home":
 //                actionHome(request, response);
                 request.getRequestDispatcher("/admin/delivery.jsp").forward(request, response);
@@ -106,10 +114,10 @@ public class DeliveryServlet extends HttpServlet {
 
         String dID = request.getParameter("dID");
         String dName = request.getParameter("deliveryName");
-        String dShipFee=request.getParameter("deliveryShipFee");
+        String dShipFee = request.getParameter("deliveryShipFee");
 
 //        Kiểm tra người dùng có nhập dữ liệu vào hay chưa
-        if (!dName.trim().equals("")&&!dShipFee.trim().equals("")) {
+        if (!dName.trim().equals("") && !dShipFee.trim().equals("")) {
 //            Thực hiện kiểm tra dữ liệu vào
 
 //            Tạo một đối tượng Product để lưu dữ liệu
@@ -149,5 +157,29 @@ public class DeliveryServlet extends HttpServlet {
                 request.getRequestDispatcher("/admin/customer.jsp").forward(request, response);
             }
         }
+    }
+
+    protected void actionDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        Thêm tiếng việt
+        request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("utf-8");
+//        Lấy id của delivery được truyền xuống nè
+        String dID = request.getParameter("deliveryID");
+//        Lấy product có id tương ứng ra
+        Delivery selectedDelivery = DeliveryDAO.getDeliveryByID(Integer.parseInt(dID));
+        String message;
+
+        if (DeliveryBS.totalOrder(selectedDelivery) == 0) {
+            message = new String("Vừa xóa phương thức <b>" + selectedDelivery.getName() + "</b>");
+            DeliveryDAO.delete(selectedDelivery);
+        } else {
+            message = new String("Phương thức <b>" + selectedDelivery.getName() + "</b> hong thể xóa do có dữ liệu cần dùng!");
+        }
+        request.setAttribute("message", message);
+
+        List<Delivery> deliveryList = DeliveryDAO.getAll();
+        request.setAttribute("deliveryList", deliveryList);
+
+        request.getRequestDispatcher("/admin/delivery.jsp").forward(request, response);
     }
 }

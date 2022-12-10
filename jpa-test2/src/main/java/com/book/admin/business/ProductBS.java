@@ -47,11 +47,12 @@ public class ProductBS {
         return total;
     }
 
+//    Đếm số sac bán được của một danh sách các sản phẩm nào đó (thường là cho từng loại sách)
     public static int sellBook(List<Product> books) {
         int total = 0;
         for (Product book : books) {
             for (Order order : OrderDAO.getAll()) {
-                if (order.getStatus() == 1) {
+                if (order.getStatus() == 1 || order.getStatus() == 5) {
                     continue;
                 }
                 for (Orderitem item : OrderItemDAO.orderItemList(order.getId())) {

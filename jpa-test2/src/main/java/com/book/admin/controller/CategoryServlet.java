@@ -1,9 +1,11 @@
 package com.book.admin.controller;
 
+import com.book.admin.business.CategoryBS;
 import com.book.admin.business.DeliveryBS;
-import com.book.admin.business.PaymethodBS;
+import com.book.dao.CategoryDAO;
 import com.book.dao.DeliveryDAO;
 import com.book.dao.PaymentDAO;
+import com.book.entity.Category;
 import com.book.entity.Delivery;
 import com.book.entity.Paymethod;
 
@@ -13,17 +15,16 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "PaymethodServlet", value = "/admin/paymethod")
-public class PaymethodServlet extends HttpServlet {
+@WebServlet(name = "CategoryServlet", value = "/admin/category")
+public class CategoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        Thêm tiếng việt
+
+        List<Category> categoryList = CategoryDAO.getAll();
+        request.setAttribute("categoryList", categoryList);
+
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
-        List<Paymethod> paymethodList = PaymentDAO.getAll();
-        request.setAttribute("paymethodList", paymethodList);
-
-        // Lấy action của người dùng
         String action = request.getParameter("action");
         if (action == null) {
             action = new String("home");
@@ -38,25 +39,24 @@ public class PaymethodServlet extends HttpServlet {
             case "save":
                 actionSave(request, response);
                 break;
+
             case "home":
 //                actionHome(request, response);
-                request.getRequestDispatcher("/admin/paymethod.jsp").forward(request, response);
+                request.getRequestDispatcher("/admin/category.jsp").forward(request, response);
                 break;
             default:
-                request.getRequestDispatcher("/admin/paymethod.jsp").forward(request, response);
+                request.getRequestDispatcher("/admin/category.jsp").forward(request, response);
                 break;
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        Thêm tiếng việt
+        List<Category> categoryList = CategoryDAO.getAll();
+        request.setAttribute("categoryList", categoryList);
+
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
-        List<Paymethod> paymethodList = PaymentDAO.getAll();
-        request.setAttribute("paymethodList", paymethodList);
-
-        // Lấy action của người dùng
         String action = request.getParameter("action");
         if (action == null) {
             action = new String("home");
@@ -76,10 +76,10 @@ public class PaymethodServlet extends HttpServlet {
                 break;
             case "home":
 //                actionHome(request, response);
-                request.getRequestDispatcher("/admin/paymethod.jsp").forward(request, response);
+                request.getRequestDispatcher("/admin/category.jsp").forward(request, response);
                 break;
             default:
-                request.getRequestDispatcher("/admin/paymethod.jsp").forward(request, response);
+                request.getRequestDispatcher("/admin/category.jsp").forward(request, response);
                 break;
         }
     }
@@ -88,66 +88,68 @@ public class PaymethodServlet extends HttpServlet {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
         request.setAttribute("action", "insert");
-        request.getRequestDispatcher("/admin/paymethod-form.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin/category-form.jsp").forward(request, response);
     }
 
     protected void actionEdit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
         request.setAttribute("action", "edit");
-        String pID = request.getParameter("paymethodID");
-//        Lấy employee có id tương ứng ra
-        Paymethod selectedPaymethod = PaymentDAO.find(Integer.parseInt(pID));
-        request.setAttribute("paymethod", selectedPaymethod);
-        request.getRequestDispatcher("/admin/paymethod-form.jsp").forward(request, response);
+        String cID = request.getParameter("categoryID");
+//        Lấy delivery có id tương ứng ra
+        Category selectedCategory = CategoryDAO.findById(Integer.parseInt(cID));
+        request.setAttribute("category", selectedCategory);
+        request.getRequestDispatcher("/admin/category-form.jsp").forward(request, response);
     }
 
     protected void actionSave(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
 
-        String pID = request.getParameter("pID");
-        String pName = request.getParameter("paymethodName");
+        String cID = request.getParameter("cID");
+        String cName = request.getParameter("categoryName");
 
 //        Kiểm tra người dùng có nhập dữ liệu vào hay chưa
-        if (!pName.trim().equals("")) {
+        if (!cName.trim().equals("")) {
 //            Thực hiện kiểm tra dữ liệu vào
 
 //            Tạo một đối tượng Product để lưu dữ liệu
-            Paymethod paymethod = new Paymethod();
-            if (!pID.equals("")) {
-                paymethod.setId(Integer.parseInt(pID));
+            Category category = new Category();
+            if (!cID.equals("")) {
+                category.setId(Integer.parseInt(cID));
             }
-            paymethod.setName(pName);
+            category.setName(cName);
 
 //          Kiểm tra xem có ID chưa, nếu chưa là thêm mới, nếu có là cập nhật
-//          Đang thêm nhân viên mới
-            if (paymethod.getId() == 0) {
+            if (category.getId() == 0) {
                 request.setAttribute("action", "insert");
-                request.setAttribute("paymethod", paymethod);
+                request.setAttribute("category", category);
 //                  Kiểm tra xem một số thông tin phải là unique
 //              Nếu số tên đã tồn tại
-                if (!"OK".equals(PaymethodBS.CheckNameAvailable(paymethod))) {
-                    request.setAttribute("message", PaymethodBS.CheckNameAvailable(paymethod));
-                    request.getRequestDispatcher("/admin/paymethod-form.jsp").forward(request, response);
+                if (!"OK".equals(CategoryBS.CheckNameAvailable(category))) {
+                    request.setAttribute("message", CategoryBS.CheckNameAvailable(category));
+                    request.getRequestDispatcher("/admin/category-form.jsp").forward(request, response);
                 }
 //              Nếu là tên mới
                 else {
-                    PaymentDAO.save(paymethod);
-                    String message = new String("Vừa thêm phương thức thanh toán <b>" + paymethod.getName() + "</b>");
+                    CategoryDAO.save(category);
+                    String message = new String("Vừa thêm loại sách <b>" + category.getName() + "</b>");
                     request.setAttribute("message", message);
-                    List<Paymethod> paymethodList = PaymentDAO.getAll();
-                    request.setAttribute("paymethodList", paymethodList);
-                    request.getRequestDispatcher("/admin/paymethod.jsp").forward(request, response);
+
+                    List<Category> categoryList = CategoryDAO.getAll();
+                    request.setAttribute("categoryList", categoryList);
+                    request.getRequestDispatcher("/admin/category.jsp").forward(request, response);
                 }
             }
 //          Đang cập nhật sách
             else {
-                String message = new String("Vừa xem thông tin khách hàng <b>" + paymethod.getName() + "</b>");
+                CategoryDAO.update(category);
+                String message = new String("Vừa cập nhật loại sách <b>" + category.getName() + "</b>");
                 request.setAttribute("message", message);
-                List<Paymethod> paymethodList = PaymentDAO.getAll();
-                request.setAttribute("paymethodList", paymethodList);
-                request.getRequestDispatcher("/admin/customer.jsp").forward(request, response);
+
+                List<Category> categoryList = CategoryDAO.getAll();
+                request.setAttribute("categoryList", categoryList);
+                request.getRequestDispatcher("/admin/category.jsp").forward(request, response);
             }
         }
     }
@@ -157,22 +159,23 @@ public class PaymethodServlet extends HttpServlet {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
 //        Lấy id của delivery được truyền xuống nè
-        String pID = request.getParameter("paymethodID");
+        String cID = request.getParameter("categoryID");
 //        Lấy product có id tương ứng ra
-        Paymethod selectedMethod = PaymentDAO.find(Integer.parseInt(pID));
+        Category selectedCategory = CategoryDAO.findById(Integer.parseInt(cID));
         String message;
 
-        if (PaymethodBS.totalOrder(selectedMethod) == 0) {
-            message = new String("Vừa xóa phương thức <b>" + selectedMethod.getName() + "</b>");
-            PaymentDAO.delete(selectedMethod);
+        if (CategoryBS.totalProduct(selectedCategory) == 0) {
+            message = new String("Vừa xóa loại sách <b>" + selectedCategory.getName() + "</b>");
+            CategoryDAO.delete(selectedCategory);
         } else {
-            message = new String("Phương thức <b>" + selectedMethod.getName() + "</b> hong thể xóa do có dữ liệu cần dùng!");
+            message = new String("Loại sách <b>" + selectedCategory.getName() + "</b> hong thể xóa do có dữ liệu cần dùng!");
         }
         request.setAttribute("message", message);
 
-        List<Paymethod> paymethodList = PaymentDAO.getAll();
-        request.setAttribute("paymethodList", paymethodList);
+        List<Category> categoryList = CategoryDAO.getAll();
+        request.setAttribute("categoryList", categoryList);
 
-        request.getRequestDispatcher("/admin/paymethod.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin/category.jsp").forward(request, response);
     }
+
 }

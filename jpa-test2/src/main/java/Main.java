@@ -1,6 +1,12 @@
+import com.book.admin.business.CategoryBS;
+import com.book.admin.business.DeliveryBS;
+import com.book.admin.business.OrderBS;
+import com.book.admin.business.ProductBS;
 import com.book.dao.*;
 import com.book.entity.*;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Main {
@@ -121,10 +127,11 @@ public class Main {
 //        System.out.println(OrderDAO.find(1).getIdDelivery());
 //        System.out.println(Order.estimateReceiveDate(OrderDAO.find(1)));
 
-        List<Orderitem> orderitemEntities = OrderItemDAO.getAll();
-        System.out.println(OrderItemDAO.getAll().get(0).getIdProduct());
+
+        System.out.println(DeliveryBS.totalOrder(DeliveryDAO.getDeliveryByID(1)));
+
+    }
 
 //        List<OrderEntity> orderList = OrderDAO.get5LastestOrder();
 //        System.out.println(orderList.size());
-    }
 }

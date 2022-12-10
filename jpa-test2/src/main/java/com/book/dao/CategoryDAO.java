@@ -2,6 +2,7 @@ package com.book.dao;
 
 import com.book.admin.business.CategoryBS;
 import com.book.entity.Category;
+import com.book.entity.Delivery;
 import com.book.util.HibernateUtility;
 import org.hibernate.HibernateError;
 import org.hibernate.Session;
@@ -39,7 +40,7 @@ public class CategoryDAO {
      * Đầu vào: một thực thể được tạo ở đâu đó ở các tầng trên
      * Đầu ra: một giá trị bool cho biết kết quả của việc thêm, true - thành công, false - thất bại
      * */
-    public static Boolean save(CategoryBS category) {
+    public static Boolean save(Category category) {
         Boolean flag = false;
         Session session = HibernateUtility.getSessionFactory().openSession();
         Transaction transaction = session.getTransaction();
@@ -184,5 +185,27 @@ public class CategoryDAO {
             session.close();
         }
         return flag;
+    }
+
+    public static List<Category> getCategoryByName(String name) {
+        // open session
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Category> categories = null;
+        try {
+            // Create query string
+            String queryString = "from Category where name like :name";
+
+            // Create query
+            Query query = session.createQuery(queryString, Category.class);
+            query.setParameter("name", name);
+
+            // Return result List
+            categories = query.list();
+        } catch (HibernateError error) {
+            System.err.println(error);
+        } finally {
+            session.close();
+        }
+        return categories;
     }
 }

@@ -134,4 +134,40 @@ public class OrderDAO {
         }
         return orderEntities;
     }
+
+    public static List<Order> getOrderByIdDelivery(int deliveryID) {
+        // open session
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Order> orders = null;
+        try {
+            // Create query
+            final String sqlString = "select ct from Order ct where idDelivery = :id";
+            Query query = session.createQuery(sqlString);
+            query.setParameter("id", deliveryID);
+            orders = query.list();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return orders;
+    }
+
+    public static List<Order> getOrderByIdMethod(int payMethodID) {
+        // open session
+        Session session = HibernateUtility.getSessionFactory().openSession();
+        List<Order> orders = null;
+        try {
+            // Create query
+            final String sqlString = "select ct from Order ct where idMethod = :id";
+            Query query = session.createQuery(sqlString);
+            query.setParameter("id", payMethodID);
+            orders = query.list();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return orders;
+    }
 }
